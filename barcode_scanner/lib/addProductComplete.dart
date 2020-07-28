@@ -1,10 +1,11 @@
 import 'package:barcode_scanner/barcodeModel.dart';
 import 'package:flutter/material.dart';
 
-class AddProduct extends StatelessWidget {
+class AddProductComplete extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    TextEditingController _controller = TextEditingController();
+    TextEditingController _controllerCode = TextEditingController();
+    TextEditingController _controllerInitQ = TextEditingController();
 
     return Scaffold(
       body: SafeArea(
@@ -13,16 +14,16 @@ class AddProduct extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildBarcodeText(),
-            _buildProductForm(_controller),
-            _buildAddButton(context, _controller),
+            _buildInputField(_controllerCode, "Codice"),
+            _buildInputField(_controllerInitQ, "Quantita Iniziale"),
+            _buildAddButton(context, _controllerCode, _controllerInitQ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProductForm(controller) {
+  Widget _buildInputField(controller, hint) {
     return Padding(
       padding: EdgeInsets.all(12),
       child: TextField(
@@ -32,29 +33,21 @@ class AddProduct extends StatelessWidget {
           hintStyle: TextStyle(
             fontSize: 15,
           ),
-          hintText: "Nome prodotto",
+          hintText: hint,
         ),
       ),
     );
   }
 
-  Widget _buildAddButton(context, controller) {
+  Widget _buildAddButton(context, controllerCode, controllerInit) {
     return OutlineButton(
       child: Text("Add"),
       onPressed: () {
-        if (!controller.text.isEmpty && controller.text != null) {
-          barcodeModel.addToNameBox(barcodeModel.scannedCode, controller.text);
-          barcodeModel.addToListBox(barcodeModel.scannedCode, 1);
-          
+        if (!controllerCode.text.isEmpty && !controllerInit.text.isEmpty && controllerCode.text != null && controllerInit.text != null) {
+          barcodeModel.addToInitQBox(controllerCode.text, int.parse(controllerInit.text), int.parse(controllerInit.text)); //same value initially
           Navigator.of(context).pop();
         }
       },
-    );
-  }
-
-  Widget _buildBarcodeText() {
-    return Text(
-      "Code: ${barcodeModel.scannedCode}",
     );
   }
 }
